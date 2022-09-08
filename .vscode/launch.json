@@ -1,0 +1,44 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "tga2dds normal auto",
+            "type": "python",
+            "request": "launch",
+            "program": "tga2dds.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "-s",
+                "_opt",
+                "--shd",
+                "--trk",
+                "..\\MXGP of Imola 2019_dds.trk",
+                "E:\\Game\\MxBikes\\Track Editing\\tracks\\Imola\\2019\\Resolute\\MXGP of Imola 2019\\Maps\\",
+            ]
+        },
+        {
+            "name": "tga2dds no alpha no normal",
+            "type": "python",
+            "request": "launch",
+            "program": "tga2dds.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "-e",
+                "-a",
+                "off",
+                "_(n|normal)",
+                "-s",
+                "_opt",
+                "--shd",
+                "--trk",
+                "..\\MXGP of Imola 2019_dds.trk",
+                "E:\\Game\\MxBikes\\Track Editing\\tracks\\Imola\\2019\\Resolute\\MXGP of Imola 2019\\Maps\\",
+            ]
+        }
+    ]
+}
