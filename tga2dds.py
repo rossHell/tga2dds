@@ -231,12 +231,16 @@ def process_files(files:List[str], path:str):
                     # converted to dds. So we flip the image here for compensating
                     # this "bug"
                     i.flip()
-                    i.save(filename=output)
+                    try:
+                        i.save(filename=output)
+                    except Exception as e:
+                        logger.error(f'{f} conversion to {output} failed: {e}')
+
                     if os.path.exists(output):
                         in_size = os.path.getsize(full_path)
                         out_size = os.path.getsize(output)
                         output_short = f'{shortname}{suffix}.dds'
-                        logger.debug(f'  Compressed successfully to:')
+                        logger.info(f'  Compressed successfully to:')
                         logger.info(f'    -> {output_short} ({compression})')
                         logger.debug(f'    Size {file_size_to_string(out_size)} ({out_size/in_size*100:.2f}%)')
                         logger.debug('')
@@ -246,7 +250,8 @@ def process_files(files:List[str], path:str):
                         files_pairs.append((f, output_short))
                         nb_files += 1
                     else:
-                        logger.error(f'Error compressing {f}, DDS file not created')
+                        logger.error((f'DDS file {output} not found on disk after convertion'))
+
     replace_in_track_builder_project(path, files_pairs)
 
 
