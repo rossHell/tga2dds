@@ -5,8 +5,6 @@ import pip
 import sys
 # Setup the path where wand package is installed here
 sys.path.insert(0, 'C:\\Users\\rossHell\\AppData\\Roaming\\Python\\Python39\\site-packages')
-#sys.path.insert(0, 'E:\\Game\\MxBikes\\Helpers\\TgaToDDS\\')
-tga2dds_path = 'E:\\Game\\MxBikes\\Helpers\\TgaToDDS\\tga2dds.py'
 
 import bpy
 import os
@@ -19,6 +17,10 @@ import subprocess
 logger = logging.getLogger('')
 logger.setLevel(logging.NOTSET)
 
+# You must have only one text editor opened when running the script for getting the right path
+# That's a little bit tricky but __file__ gives something like 
+# "x:\blender\project\path\prj.blend\script_file_name.py" when run from blender
+tga2dds_path = os.path.join(os.path.dirname(bpy.context.space_data.text.filepath), 'tga2dds.py')
 print(f'Python version: {sys.version}')
 print(os.getcwd())
 project_path = bpy.path.abspath('//')
@@ -30,6 +32,7 @@ materials = bpy.data.materials
 textures = []
 textures_by_filename = {}
 textures_nodes_by_filename = {}
+non_color_textures = []
 for m in materials:
     if m.node_tree is None:
         continue
@@ -45,7 +48,11 @@ for m in materials:
                 logger.info(f'{img.filepath}')
                 textures.append(img)
                 fp = bpy.path.abspath(img.filepath)
-                textures_nodes_by_filename[ntpath.basename(bpy.path.abspath(img.filepath))] = n
+                img_short_name = ntpath.basename(fp)
+                if color_space == 'Non-Color':
+                    non_color_textures.append(fp)
+
+                textures_nodes_by_filename[fp] = n
             else:
                 logger.debug(f'{img.name} ignored because not TGA')
                 img.reload()
@@ -72,7 +79,7 @@ if len(textures) > 0:
             current_path = dir_path
             filters = []
         fn = ntpath.basename(fp)
-        textures_by_filename[fn] = img
+        textures_by_filename[fp] = img
         filters.append(fn)
 
     logger.debug(textures_by_filename)
@@ -124,16 +131,20 @@ if len(textures) > 0:
 
             logger.debug(f'{f} -> {dds_filename}')
 
-            if f in textures_by_filename:
-                img = textures_by_filename[f]
-                node = textures_nodes_by_filename[f]
+            if fp in textures_by_filename:
+                img = textures_by_filename[fp]
+                node = textures_nodes_by_filename[fp]
+                f_short = ntpath.basename(fp)
                 logger.info(f'updating image name and filepath')
                 logger.info(f'    {img.name} - {img.filepath}')
-                img.name = img.name.replace(f, dds_filename)
-                img.filepath = img.filepath.replace(f, dds_filename)
+                img.name = img.name.replace(f_short, dds_filename)
+                img.filepath = img.filepath.replace(f_short, dds_filename)
                 img.source = 'FILE'
                 img.reload()
-                if not img.has_data:
-                    node.image = bpy.data.images.load(os.path.join(p, dds_filename))
+                img_path = os.path.join(p, dds_filename)
+                if not img.has_data and os.path.exists(img_path):
+                    node.image = bpy.data.images.load(img_path)
+                    if fp in non_color_textures:
+                     node.image.colorspace_settings.name = 'Non-Color'
                 logger.info(f' -> {img.name} - {img.filepath}')
 
