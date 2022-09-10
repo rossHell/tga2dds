@@ -19,15 +19,20 @@ total_tga_size = 0
 total_dds_size = 0
 files_pairs = []
 
+class MakeFileHandler(logging.FileHandler):
+    def __init__(self, filename, mode='a', encoding=None, delay=0):
+        os.makedirs(os.path.dirname(filename), exist_ok=True)
+        logging.FileHandler.__init__(self, filename, mode, encoding, delay)
+
 # def create_logger() -> logging.Logger:
 def create_logger():
     timestamp = datetime.now().strftime("%d%m%Y_%H%M%S")
     # full log
-    debug_handler = logging.FileHandler(f'log/{timestamp}_tga2dds_debug.log')
+    debug_handler = MakeFileHandler(f'log/{timestamp}_tga2dds_debug.log')
     debug_handler.setLevel(logging.NOTSET)
     debug_formatter = logging.Formatter('[%(asctime)s] {%(pathname)s:%(lineno)d} %(levelname)s - %(message)s')
     debug_handler.setFormatter(debug_formatter)
-    file_handler = logging.FileHandler(f'log/{timestamp}_tga2dds.log')
+    file_handler = MakeFileHandler(f'log/{timestamp}_tga2dds.log')
     file_handler.setLevel(logging.INFO)
     console = logging.StreamHandler()
     console.setLevel(logging.NOTSET)
