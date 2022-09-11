@@ -72,7 +72,6 @@ class Results:
     ''' Human readable string of saved space with relative percentage
     example: "348.43 Mo (43.50%)"'''
     saved_string:str
-        return f'{file_size_to_string(self.saved)} ({self.total_out_size/self.total_source_size*100:.2f}%)'
     ''' Number of files processed'''
     nb_processed:int
     ''' Number of files skipped'''
@@ -108,16 +107,16 @@ optional arguments:
     On -> dxt3, off -> dxt1, auto -> enable alpha mode if alpha-channel is found in image, disable otherwise
 
   -c COMPRESSION, --compression COMPRESSION
-    Type of compression to be used for non-alpha and alpha mode, provided as two values in the same order. Default are dxt1 (Non-alpha) and dxt3 (Alpha). Example: -c dxt1 dxt3
+    Type of compression to be used for non-alpha and alpha mode, provided as two values in the same order. Default are dxt1 (Non-alpha) and dxt3 (Alpha). Example: -c 'dxt1 dxt3'
 
   -l, --lazy
     Lazy mode, does not create output file if it already exists
 
   --shd
-    Replace <file_name>.tga by <output_file_name>.dds in corresponding shd file, if found. Create automatically a new shdfile in case output filename is different than the source one
+    Replace <file_name>.tga by <output_file_name>.dds in corresponding shd file, if found. Create automatically a new shdfile in case output filename is different than the source one. Option related to MxBikes
 
   --trk [TRK]
-    Replace <file_name>.tga by <output_file_name>.dds in given trk (Resolute Track Builder Helper project) file. Must exists
+    Replace <file_name>.tga by <output_file_name>.dds in given trk (Resolute Track Builder Helper project) file. Must exists. Option related to MxBikes
 
   -s [SUFFIX], --suffix [SUFFIX]
     Suffix to be added to image output file name
@@ -141,7 +140,10 @@ optional arguments:
 
 Before to use it in a Blender project, make sure to use a copy of your original project in case something goes wrong or the result is not the one you have expected. You are responsible of any damage that you can cause to your projects using this code.
 
-The script `blender_tga2dds.py` can be run from Blender for converting all the images of a project but also replace the images in the materials for pointing on the new files created. However for getting it working, Wand package must be installed in the Blender python's environment and the path of the environment should be added to the system path
+The script `blender_tga2dds.py` can be run from Blender for converting all the images of a project but also replace the images in the materials for pointing on the new files created. Note the colorspace property (sRGB, Non-Color, ...) is also restored to the new converted image.
+
+### Wand
+For being able to convert the images, Wand package must be installed in the Blender python's environment and the path of the environment should be added to the python's system path
 using `sys.path.insert(0, 'path/to/python/env/where/Wand/is/installed')`. More informations can be found by googling something like **How to install python modules in blender**.
 
 Once Wand is installed:
@@ -149,4 +151,76 @@ Once Wand is installed:
 - Go in the *Scripting* workspace, open `blender_tga2dds.py` from the code editorw
 - Show the console window using menu *Window->Toggle System Console* if you want to see the information or error messages during the execution. Note that you can still display the console later.
 
-Once this is done, run the script for starting the conversion of your textures using the run button or from menu *Text->Run Script*
+Once this is done, run the script for starting the conversion of your textures using the run button or from menu *Text->Run Script*.
+Note the process will probably take several seconds or even minutes depending of the number and size of the image converted. Using the system console is a good way to monitor the process and know when it's terminated.
+
+## Log
+
+Every time a conversion is done with `tga2dds`, a log file is created in a `log` folder, in the current working directory. Message are also printed in the console on channel `sys.stdout` during the execution.
+
+Here is a typical log example of converting one folder containing two images:
+```
+INFO:tga2dds:Start compressing files.
+INFO:tga2dds: Alpha mode auto
+INFO:tga2dds:Processing folder C:\path\to\textures
+INFO:tga2dds:opening image C:\path\to\textures\image1.tga
+INFO:tga2dds:Processing image1.tga...
+INFO:tga2dds:  Compressed successfully to:
+INFO:tga2dds:    -> image1_opt.dds (dxt1)
+INFO:tga2dds:  Checking file names in shader files...
+INFO:tga2dds:    -> OK
+INFO:tga2dds:
+INFO:tga2dds:opening image C:\path\to\textures\image2.tga
+INFO:tga2dds:Processing image2.tga...
+INFO:tga2dds:  Compressed successfully to:
+INFO:tga2dds:    -> image2_opt.dds (dxt3)
+INFO:tga2dds:  Checking file names in shader files...
+INFO:tga2dds:    -> OK
+INFO:tga2dds:
+INFO:tga2dds:TGA 2 DDS compression terminated !
+INFO:tga2dds:2 files processed in 0.74 seconds
+INFO:tga2dds:Total TGA size: 2.67 Mo
+INFO:tga2dds:Total DDS size: 3.34 Mo
+INFO:tga2dds:Saved space 693.49 Ko (79.75%)
+INFO:tga2dds:
+INFO:tga2dds:2 processed !
+INFO:tga2dds:0 skipped !
+INFO:tga2dds:0 errors !
+```
+
+Additional messages are added when used from Blender
+
+At start, listing images of the project
+```
+INFO:tga2dds:Image found image1.tga.004 - file:image1.tga
+INFO:tga2dds:C:\path\to\textures\image1.tga
+INFO:tga2dds:Image found image2.tga.004 - file:image2.tga
+INFO:tga2dds:C:\path\to\textures\image2.tga
+...
+INFO:tga2dds:Processing 615 textures...
+```
+
+After each folder conversion, name and filepath of Blender's `Image` objects are updated.
+```
+...
+INFO:tga2dds:updating image name and filepath
+INFO:tga2dds:    image1.tga.004 - image1.tga
+INFO:tga2dds:Loading new image image1_opt.dds for texture image1_opt.dds.004
+INFO:tga2dds: -> image1_opt.dds - image1.tga
+INFO:tga2dds:updating image name and filepath
+INFO:tga2dds:    image2.tga.004 - image2.tga
+INFO:tga2dds:Loading new image image2_opt.dds for texture image2_opt.dds.004
+INFO:tga2dds:Restoring colorspace name to Non-Color
+INFO:tga2dds: -> image2_opt.dds - image2.tga
+...
+```
+
+At end
+```
+INFO:tga2dds:TGA 2 DDS compression terminated !
+INFO:tga2dds:289 files processed in 249.90 seconds
+INFO:tga2dds:Total TGA size: 1.55 Go
+INFO:tga2dds:Total DDS size: 656.54 Mo
+INFO:tga2dds:Saved space 928.43 Mo (41.42%)
+INFO:tga2dds:615 textures updated in Blender project
+```
