@@ -32,7 +32,6 @@ class MakeFileHandler(logging.FileHandler):
         os.makedirs(os.path.dirname(filename), exist_ok=True)
         logging.FileHandler.__init__(self, filename, mode, encoding, delay)
 
-
 class Args:
     def __init__(self, paths:Sequence[str], alpha:str='auto',
             compression:Sequence[str]=DEFAULT_COMPRESSION, lazy:bool=False,
@@ -41,7 +40,7 @@ class Args:
             ext_src='tga', ext_out='dds', verbose:Optional[bool]=None):
         self.paths:List[str] = paths
         self.alpha:str = alpha
-        self.compression:str = compression
+        self.compression:Sequence[str] = compression
         self.lazy:bool = lazy
         self.shd:bool = shd
         self.trk:str = trk or ''
@@ -57,8 +56,12 @@ class Args:
     @classmethod
     def from_namespace(cls, args:argparse.Namespace) -> 'Args':
         ''' Init Tga2DdsArgs from argparse.Namespace '''
+        compression = args.compression.split(' ')
+        if len(compression) < 2:
+            compression = DEFAULT_COMPRESSION
+
         return Args(
-            paths=args.path, alpha=args.alpha, compression=args.compression,
+            paths=args.path, alpha=args.alpha, compression=compression,
             lazy=args.lazy, shd=args.shd, tkr=args.trk, suffix=args.suffix,
             filters=args.filter, excludes=args.exclude, ext_src=args.ext_src,
             ext_out=args.ext_out, verbose=args.verbose
@@ -246,7 +249,7 @@ def command_line(logger:logging.Logger) -> Args:
 
     args = parser.parse_args()
     logger.debug(json.dumps(vars(args), indent=2))
-    return Args(args)
+    return Args.from_namespace(args)
 
 
 # files = []
@@ -457,7 +460,7 @@ class Converter:
 
 def main():
     ''' '''
-    args = command_line()
+    args = command_line(create_logger())
     c = Converter(args, args.path[0])
     c.convert()
 
