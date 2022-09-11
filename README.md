@@ -9,11 +9,12 @@ This module has been done during the creation of a track for the motocross simul
 `tga2dds` can be used as a python module or called using the CLI interface.
 
 ## Usage python
+
+Basic example
+
 ```python
 import tga2dds
-args = tga2dds.Args((p,), shd=True, suffix='_opt', filters=fs, verbose=True)
-converter = tga2dds.Converter(args=args,
-    working_dir=work_dir or os.getcwd(), logger=logger)
+converter = tga2dds.Converter(args=tga2dds.Args(('C:/path/to/my/images'),))
 res:tga2dds.Results = converter.convert()
 
 ```
@@ -22,7 +23,7 @@ The class `tga2dds.Args` stores the options to be passed to `tga2dds.Converter`.
 
 ```python
 Args(
-    # List of directories to process
+    ''' List of directories to process'''
     paths:List[str]
     '''Alpha mode. Determine the type of compression used depending of the presence of the alpha-channel in the image to be converted. Can be 'on', 'off' or 'auto'. Compression type is defined by the tuple of compression argument where first element of the tuple is used when no alpha channel is detected, and second is used in the other case.
     on: Compression for image with alpha channel is always applied
@@ -53,7 +54,6 @@ Args(
 ```
 
 The method `convert()` return an object of type `tga2dds.Results` which provides some useful informations about the files which has been processed, or not in case of skip (lazy mode) or errors.
-
 
 ```python
 class Results:
@@ -99,39 +99,42 @@ usage: tga2dds.py [-h] [-a [{on,off,auto}]] [-c COMPRESSION] [-l] [--shd] [--trk
 Convert TGA images to DDS
 
 positional arguments:
-  path                  Path of folder(s) containing image files to convert
+  path
+    Path of folder(s) containing image files to convert
 
 optional arguments:
   -h, --help            show this help message and exit
   -a [{on,off,auto}], --alpha [{on,off,auto}]
-                        On -> dxt3, off -> dxt1, auto -> enable alpha mode if
-                        alpha-channel is found in image, disable otherwise
+    On -> dxt3, off -> dxt1, auto -> enable alpha mode if alpha-channel is found in image, disable otherwise
+
   -c COMPRESSION, --compression COMPRESSION
-                        Type of compression to be used for non-alpha and alpha mode,
-                        provided as two values in the same order. Default are dxt1
-                        (Non-alpha) and dxt3
-                        (Alpha). Example: -c dxt1 dxt3
-  -l, --lazy            Lazy mode, does not create output file if it already exists
-  --shd                 Replace <file_name>.tga by <output_file_name>.dds in
-                        corresponding shd file, if found. Create automatically a new shd
-                        file in case output filename is different than the source one
-  --trk [TRK]           Replace <file_name>.tga by <output_file_name>.dds in given trk
-                        (Resolute Track Builder Helper project) file. Must exists
+    Type of compression to be used for non-alpha and alpha mode, provided as two values in the same order. Default are dxt1 (Non-alpha) and dxt3 (Alpha). Example: -c dxt1 dxt3
+
+  -l, --lazy
+    Lazy mode, does not create output file if it already exists
+
+  --shd
+    Replace <file_name>.tga by <output_file_name>.dds in corresponding shd file, if found. Create automatically a new shdfile in case output filename is different than the source one
+
+  --trk [TRK]
+    Replace <file_name>.tga by <output_file_name>.dds in given trk (Resolute Track Builder Helper project) file. Must exists
+
   -s [SUFFIX], --suffix [SUFFIX]
-                        Suffix to be added to image output file name
+    Suffix to be added to image output file name
   -f FILTER, --filter FILTER
-                        Process only files matching given patterns. Can be combined with
-                        exclude option. Used as regular expression
+    Process only files matching given patterns. Can be combined with exclude option. Used as regular expression
+
   -e EXCLUDE, --exclude EXCLUDE
-                        Process only files which are not matching given patterns. Can be
-                        combined with filter option. Used as regular expression.
+    Process only files which are not matching given patterns. Can be combined with filter option. Used as regular expression.
+
   --ext-src EXT_SRC, --extension-source EXT_SRC
-                        Extension for source file. "tga" by default, but can be any other
-                        format supported by Wand. Can be specified multiple times
+    Extension for source file. "tga" by default, but can be any other format supported by Wand. Can be specified multiple times
+
   --ext-out [EXT_OUT], --extension-output [EXT_OUT]
-                        Extension for output file. "dds" by default, but can be any other
-                        format supported by Wand
-  -v, --verbose         Enable verbose mode
+    Extension for output file. "dds" by default, but can be any other format supported by Wand
+
+  -v, --verbose
+    Enable verbose mode
 ```
 
 ## Replacing textures from Blender
