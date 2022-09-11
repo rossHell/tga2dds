@@ -140,7 +140,7 @@ optional arguments:
 
 Before to use it in a Blender project, make sure to use a copy of your original project in case something goes wrong or the result is not the one you have expected. You are responsible of any damage that you can cause to your projects using this code.
 
-The script `blender_tga2dds.py` can be run from Blender for converting all the images of a project but also replace the images in the materials for pointing on the new files created. Note the colorspace property (sRGB, Non-Color, ...) is also restored to the new converted image.
+The script `blender_tga2dds.py` can be run from Blender for converting all the images of a project but also replace the images in the materials for pointing on the new files created. The colorspace property (sRGB, Non-Color, ...) is restored to the new converted image and the *shd* option is also enabled for updating or generating the shader files (related to MxBikes) when necessary
 
 ### Wand
 For being able to convert the images, Wand package must be installed in the Blender python's environment and the path of the environment should be added to the python's system path
