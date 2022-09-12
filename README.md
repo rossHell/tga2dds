@@ -25,7 +25,7 @@ The class `tga2dds.Args` stores the options to be passed to `tga2dds.Converter`.
 Args(
     ''' List of directories to process'''
     paths:List[str]
-    '''Alpha mode. Determine the type of compression used depending of the presence of the alpha-channel in the image to be converted. Can be 'on', 'off' or 'auto'. Compression type is defined by the tuple of compression argument where first element of the tuple is used when no alpha channel is detected, and second is used in the other case.
+    '''Alpha mode. Determine the type of compression used depending of the presence of the alpha-channel in the image to be converted. Can be "on", "off" or "auto". Compression type is defined by the tuple of compression argument where first element of the tuple is used when no alpha channel is detected, and second is used in the other case.
     on: Compression for image with alpha channel is always applied
     off: Compression for image without alpha channel is always applied. The alpha-channel is also disabled in the converted image
     auto: Compression is applied according to alpha-channel presence in the source image'''
