@@ -206,12 +206,12 @@ After each folder conversion, name and filepath of Blender's `Image` objects are
 INFO:tga2dds:updating image name and filepath
 INFO:tga2dds:    image1.tga.004 - image1.tga
 INFO:tga2dds:Loading new image image1_opt.dds for texture image1_opt.dds.004
-INFO:tga2dds: -> image1_opt.dds - image1.tga
+INFO:tga2dds: -> image1_opt.dds - image1_opt.dds
 INFO:tga2dds:updating image name and filepath
 INFO:tga2dds:    image2.tga.004 - image2.tga
 INFO:tga2dds:Loading new image image2_opt.dds for texture image2_opt.dds.004
 INFO:tga2dds:Restoring colorspace name to Non-Color
-INFO:tga2dds: -> image2_opt.dds - image2.tga
+INFO:tga2dds: -> image2_opt.dds - image2_opt.dds
 ...
 ```
 
