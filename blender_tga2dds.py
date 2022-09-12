@@ -226,6 +226,7 @@ def convert(textures:TexturesData, logger:logging.Logger, work_dir:Optional[str]
             (out, err) = proc.communicate()
             # '''
 
+            # TODO: Move code below in dedicated method
             # Replace image names and file names with new files created
             processed_by_filename = {}
             for p in (res.processed + res.skipped):
@@ -248,7 +249,7 @@ def convert(textures:TexturesData, logger:logging.Logger, work_dir:Optional[str]
                             logger.info(f'Restoring colorspace name to {t.initial_colorspace_name}')
                             t.colorspace_name = t.initial_colorspace_name
 
-                    logger.info(f' -> {t.texture_name} - {t.source.filename}')
+                    logger.info(f' -> {t.texture_name} - {t.out.filename}')
                     nb_tex_replaced += 1
 
     total_res = tga2dds.Results.merge(results)
