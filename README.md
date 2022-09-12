@@ -152,7 +152,9 @@ Once Wand is installed:
 - Show the console window using menu *Window->Toggle System Console* if you want to see the information or error messages during the execution. Note that you can still display the console later.
 
 Once this is done, run the script for starting the conversion of your textures using the run button or from menu *Text->Run Script*.
-Note the process will probably take several seconds or even minutes depending of the number and size of the image converted. Using the system console is a good way to monitor the process and know when it's terminated.
+Note the process will probably take several seconds or even minutes depending of the number and size of the images converted. Using the system console is a good way to monitor the process and know when it's terminated.
+
+![blender_01](screenshots/blender_01.png)
 
 ## Log
 
@@ -188,7 +190,7 @@ INFO:tga2dds:0 skipped !
 INFO:tga2dds:0 errors !
 ```
 
-Additional messages are added when used from Blender
+Additional messages are added when `blender_tga2dds.py` is run from Blender
 
 At start, listing images of the project
 ```
